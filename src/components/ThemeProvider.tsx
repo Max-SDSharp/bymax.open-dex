@@ -1,7 +1,8 @@
 'use client'
 
-import { useThemeStore } from '@/store/useThemeStore'
 import { useEffect } from 'react'
+
+import { useThemeStore } from '@/store/useThemeStore'
 
 interface ThemeProviderProps {
   children: React.ReactNode
@@ -9,16 +10,19 @@ interface ThemeProviderProps {
 
 export default function ThemeProvider({ children }: ThemeProviderProps) {
   const { setTheme } = useThemeStore()
-  
-  // Aplicar o tema quando o componente é montado
+
+  // Apply theme when component is mounted
   useEffect(() => {
-    // Definir tema inicial
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' || 
-                       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    
+    // Set initial theme
+    const savedTheme =
+      (localStorage.getItem('theme') as 'light' | 'dark') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light')
+
     setTheme(savedTheme)
-    
-    // Adiciona script para evitar flash de tema incorreto durante o carregamento
+
+    // Add script to avoid theme flash during loading
     const script = document.createElement('script')
     script.innerHTML = `
       (function() {
@@ -33,13 +37,13 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
       })();
     `
     document.head.appendChild(script)
-    
+
     return () => {
       if (script.parentNode) {
         script.parentNode.removeChild(script)
       }
     }
   }, [setTheme])
-  
+
   return children
-} 
+}

@@ -1,5 +1,6 @@
-import { createStore } from './useStore'
 import { Draft } from 'immer'
+
+import { createStore } from './useStore'
 
 // Interface for the DEX state
 interface DexState {
@@ -12,7 +13,7 @@ interface DexState {
     }
   }
   selectedMarket: string | null
-  
+
   // Wallet state
   wallet: {
     connected: boolean
@@ -21,13 +22,13 @@ interface DexState {
       [token: string]: number
     }
   }
-  
+
   // Order state
   orders: {
     pending: Order[]
     completed: Order[]
   }
-  
+
   // Actions
   connectWallet: () => void
   disconnectWallet: () => void
@@ -68,23 +69,23 @@ export const useDexStore = createStore<DexState>((set) => ({
     },
   },
   selectedMarket: 'BTC-USD',
-  
+
   wallet: {
     connected: false,
     address: null,
     balance: {
-      'USD': 10000,
-      'BTC': 0.5,
-      'ETH': 5,
-      'SOL': 50,
+      USD: 10000,
+      BTC: 0.5,
+      ETH: 5,
+      SOL: 50,
     },
   },
-  
+
   orders: {
     pending: [],
     completed: [],
   },
-  
+
   // Actions
   connectWallet: () => {
     set((state: Draft<DexState>) => {
@@ -92,20 +93,20 @@ export const useDexStore = createStore<DexState>((set) => ({
       state.wallet.address = '0x' + Math.random().toString(16).slice(2, 12)
     })
   },
-  
+
   disconnectWallet: () => {
     set((state: Draft<DexState>) => {
       state.wallet.connected = false
       state.wallet.address = null
     })
   },
-  
+
   selectMarket: (market) => {
     set((state: Draft<DexState>) => {
       state.selectedMarket = market
     })
   },
-  
+
   placeOrder: (orderData) => {
     set((state: Draft<DexState>) => {
       const newOrder: Order = {
@@ -114,13 +115,15 @@ export const useDexStore = createStore<DexState>((set) => ({
         status: 'pending',
         createdAt: Date.now(),
       }
-      
+
       state.orders.pending.push(newOrder)
-      
+
       // Simulate order completion after 2 seconds for demo purposes
       setTimeout(() => {
         set((state: Draft<DexState>) => {
-          const orderIndex = state.orders.pending.findIndex((o: Order) => o.id === newOrder.id)
+          const orderIndex = state.orders.pending.findIndex(
+            (o: Order) => o.id === newOrder.id,
+          )
           if (orderIndex >= 0) {
             const order = state.orders.pending[orderIndex]
             order.status = 'completed'
@@ -131,4 +134,4 @@ export const useDexStore = createStore<DexState>((set) => ({
       }, 2000)
     })
   },
-})) 
+}))
