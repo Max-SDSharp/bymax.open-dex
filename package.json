@@ -40,6 +40,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "globals": "^16.1.0",
     "postcss": "^8",
+    "prettier": "^3.2.5",
     "tailwindcss": "^3.4.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5",
