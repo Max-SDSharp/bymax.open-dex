@@ -1,7 +1,7 @@
 {
   "buildCommand": "next build",
   "outputDirectory": ".next",
-  "installCommand": "yarn install",
+  "installCommand": "npm install",
   "framework": "nextjs",
   "regions": ["gru1"]
 }
