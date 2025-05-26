@@ -27,7 +27,13 @@ export default function DriftClient() {
     { symbol: string; balance: number }[]
   >([])
   const [perpPositions, setPerpPositions] = useState<
-    { symbol: string; size: number; notional: number }[]
+    {
+      symbol: string
+      size: number
+      side: string
+      notional: number
+      marketIndex: number
+    }[]
   >([])
 
   // Trading states
@@ -355,47 +361,294 @@ export default function DriftClient() {
 
             // Get all perp positions (simplified)
             try {
+              console.log('Starting to fetch perp positions...')
               const perpPositionsData = []
-              // Check positions for market indices 0-10
-              for (let i = 0; i < 10; i++) {
-                const position = user.getPerpPosition(i)
-                if (position && !position.baseAssetAmount.isZero()) {
-                  const size = convertToNumber(
-                    position.baseAssetAmount,
-                    QUOTE_PRECISION,
+              // Check positions for market indices 0-100 (aumentar para verificar mais mercados)
+              for (let i = 0; i < 100; i++) {
+                try {
+                  const position = user.getPerpPosition(i)
+
+                  // Log all positions regardless of zero amount for debugging
+                  console.log(
+                    `Market ${i} position:`,
+                    position
+                      ? {
+                          baseAssetAmount: position.baseAssetAmount.toString(),
+                          quoteAssetAmount: position.quoteAssetAmount
+                            ? position.quoteAssetAmount.toString()
+                            : 'N/A',
+                          isZero: position.baseAssetAmount.isZero
+                            ? position.baseAssetAmount.isZero()
+                            : 'N/A',
+                        }
+                      : 'not found',
                   )
 
-                  let symbol = `Market ${i}`
+                  // Verificar se o usuário tem uma posição neste mercado
+                  // Mudando para uma verificação mais direta para pegar qualquer posição não-zero
+                  if (
+                    position &&
+                    position.baseAssetAmount &&
+                    typeof position.baseAssetAmount.isZero === 'function' &&
+                    !position.baseAssetAmount.isZero()
+                  ) {
+                    console.log(`Found non-zero position for market ${i}:`, {
+                      baseAssetAmount: position.baseAssetAmount.toString(),
+                      quoteAssetAmount: position.quoteAssetAmount
+                        ? position.quoteAssetAmount.toString()
+                        : 'N/A',
+                    })
 
-                  // Hard-coded symbols for common markets
-                  if (i === 0) symbol = 'USDC'
-                  if (i === 1) symbol = 'SOL'
-                  if (i === 3) symbol = 'BTC'
-                  if (i === 4) symbol = 'ETH'
-
-                  // Try to get from SpotMarkets configuration
-                  try {
-                    // Try to get from mainnet-beta configuration
-                    const marketConfig = SpotMarkets['mainnet-beta'].find(
-                      (market) => market.marketIndex === i,
+                    const size = convertToNumber(
+                      position.baseAssetAmount,
+                      QUOTE_PRECISION,
                     )
-                    if (marketConfig && marketConfig.symbol) {
-                      symbol = marketConfig.symbol
+
+                    // Determine side (buy/sell) based on position size
+                    const side = size > 0 ? 'buy' : 'sell'
+
+                    let symbol = `Market ${i}`
+                    let marketPrice = 0
+
+                    // ADDITIONAL LOGGING FOR DEBUGGING
+                    console.log(`Attempting to identify market ${i} symbol...`)
+
+                    // Check if known tokens like HYPE
+                    const knownTokens: Record<number, string> = {
+                      // Common major tokens
+                      0: 'SOL',
+                      1: 'BTC',
+                      2: 'ETH',
+
+                      // Recently added tokens (including HYPE)
+                      21: 'HYPE',
+                      22: 'STRK',
+                      23: 'JTO',
+                      24: 'DYM',
+                      25: 'PYTH',
+                      26: 'WIF',
+                      27: 'BONK',
+                      28: 'JUP',
+
+                      // Add more if needed
                     }
-                  } catch (e) {
-                    console.log(
-                      `Error getting symbol from SpotMarkets for perp market ${i}:`,
-                      e,
-                    )
-                  }
 
-                  perpPositionsData.push({
-                    symbol: `${symbol}-PERP`,
-                    size,
-                    notional: size * 1, // Placeholder for notional value
-                  })
+                    if (knownTokens[i]) {
+                      console.log(
+                        `Found token in hardcoded list: Market ${i} = ${knownTokens[i]}`,
+                      )
+                      symbol = knownTokens[i]
+                    }
+
+                    // PRIORITIZE using PerpMarkets from SDK to get symbol - similar to how SpotMarkets is used
+                    let foundSymbolFromSDK = false
+                    try {
+                      if (sdk.PerpMarkets && sdk.PerpMarkets['mainnet-beta']) {
+                        console.log(
+                          `Checking PerpMarkets SDK for market ${i}...`,
+                        )
+                        // Log all available market indices in PerpMarkets
+                        const marketIndices = sdk.PerpMarkets[
+                          'mainnet-beta'
+                        ].map((m) => m.marketIndex)
+                        console.log(
+                          'Available market indices in PerpMarkets:',
+                          marketIndices,
+                        )
+
+                        const perpMarketConfig = sdk.PerpMarkets[
+                          'mainnet-beta'
+                        ].find((market) => market.marketIndex === i)
+
+                        if (perpMarketConfig) {
+                          console.log(
+                            `Found perpMarketConfig for market ${i}:`,
+                            perpMarketConfig,
+                          )
+                          if (perpMarketConfig.symbol) {
+                            symbol = perpMarketConfig.symbol
+                            foundSymbolFromSDK = true
+                            console.log(
+                              `Using symbol from PerpMarkets SDK for market ${i}: ${symbol}`,
+                            )
+                          } else if ((perpMarketConfig as any).name) {
+                            symbol = (perpMarketConfig as any).name
+                            foundSymbolFromSDK = true
+                            console.log(
+                              `Using name from PerpMarkets SDK for market ${i}: ${symbol}`,
+                            )
+                          }
+                        }
+                      } else {
+                        console.log(
+                          'PerpMarkets not available in SDK or missing mainnet-beta',
+                        )
+                      }
+                    } catch (sdkErr) {
+                      console.error(
+                        'Error accessing PerpMarkets from SDK:',
+                        sdkErr,
+                      )
+                    }
+
+                    // If symbol not found from SDK, try getting from perpMarket
+                    if (!foundSymbolFromSDK) {
+                      try {
+                        const perpMarket = driftClient.getPerpMarketAccount(i)
+                        console.log(
+                          `Perp market data for index ${i}:`,
+                          perpMarket
+                            ? {
+                                name: perpMarket.name,
+                                hasAmm: !!perpMarket.amm,
+                              }
+                            : 'not found',
+                        )
+
+                        if (perpMarket) {
+                          // Try to get market price from the perpMarket
+                          try {
+                            // Use type assertion for all property accesses to avoid TypeScript errors
+                            const perpMarketAny = perpMarket as any
+                            const oraclePrice =
+                              perpMarketAny.amm?.oraclePrice ||
+                              perpMarketAny.oraclePriceTwap ||
+                              perpMarketAny.oraclePrice
+
+                            if (oraclePrice) {
+                              marketPrice = convertToNumber(
+                                oraclePrice,
+                                QUOTE_PRECISION,
+                              )
+                              console.log(`Market ${i} price:`, marketPrice)
+                            }
+                          } catch (e) {
+                            console.log(
+                              `Error getting price for market ${i}:`,
+                              e,
+                            )
+                          }
+
+                          // Try to get symbol from market name if available
+                          if (perpMarket.name) {
+                            const nameBytes = perpMarket.name
+                            if (Array.isArray(nameBytes)) {
+                              symbol = String.fromCharCode(
+                                ...nameBytes.filter((b) => b > 0),
+                              )
+                              console.log(
+                                `Parsed symbol from name bytes for market ${i}:`,
+                                symbol,
+                              )
+                            }
+                          }
+                        }
+                      } catch (marketErr) {
+                        console.log(
+                          `Error getting perp market ${i}:`,
+                          marketErr,
+                        )
+                      }
+                    }
+
+                    // Fallback to known perp markets if needed
+                    if (symbol === `Market ${i}`) {
+                      const knownPerpMarkets: Record<number, string> = {
+                        0: 'SOL',
+                        1: 'BTC',
+                        2: 'ETH',
+                        3: 'ARB',
+                        4: 'BNB',
+                        5: 'PYTH',
+                        6: 'DOGE',
+                        7: 'RNDR',
+                        8: 'XRP',
+                        9: 'SUI',
+                        10: 'TIA',
+                        11: 'JUP',
+                        12: 'SEI',
+                        13: 'JTO',
+                        14: 'BONK',
+                        15: 'WIF',
+                        21: 'HYPE', // Add HYPE token at index 21
+                      }
+
+                      if (knownPerpMarkets[i]) {
+                        symbol = knownPerpMarkets[i]
+                        console.log(
+                          `Used known perp market mapping for index ${i}: ${symbol}`,
+                        )
+                      }
+                    }
+
+                    // Calculate notional value (size * price)
+                    // If price is not available, try to get from position
+                    if (!marketPrice && position.quoteAssetAmount) {
+                      const quoteAmount = convertToNumber(
+                        position.quoteAssetAmount,
+                        QUOTE_PRECISION,
+                      )
+                      if (size !== 0) {
+                        marketPrice = Math.abs(quoteAmount / size)
+                        console.log(
+                          `Calculated price from position for market ${i}:`,
+                          marketPrice,
+                        )
+                      }
+                    }
+
+                    // If still no price, use a default or placeholder
+                    if (!marketPrice) {
+                      // Try to find the entry price from the position
+                      try {
+                        // Use type assertion to access potential entryPrice property
+                        const entryPrice = (position as any).entryPrice
+                        if (entryPrice) {
+                          marketPrice = convertToNumber(
+                            entryPrice,
+                            QUOTE_PRECISION,
+                          )
+                          console.log(
+                            `Using entry price for market ${i}:`,
+                            marketPrice,
+                          )
+                        }
+                      } catch (e) {
+                        console.log(
+                          `Error getting entry price for market ${i}:`,
+                          e,
+                        )
+                        marketPrice = 1 // Default placeholder
+                      }
+                    }
+
+                    const notional = Math.abs(size * marketPrice)
+
+                    perpPositionsData.push({
+                      symbol: `${symbol}-PERP`,
+                      size: Math.abs(size), // Show absolute value for display
+                      side, // Add side (buy/sell) to the position data
+                      notional,
+                      marketIndex: i, // Store the market index for debugging
+                    })
+
+                    console.log(`Added perp position for ${symbol}-PERP:`, {
+                      size,
+                      side,
+                      notional,
+                      marketPrice,
+                      marketIndex: i,
+                    })
+                  }
+                } catch (positionErr) {
+                  console.log(
+                    `Error processing perp position for market ${i}:`,
+                    positionErr,
+                  )
                 }
               }
+
+              console.log('Final perp positions data:', perpPositionsData)
               setPerpPositions(perpPositionsData)
             } catch (err) {
               console.error('Error getting perp positions:', err)
@@ -1188,6 +1441,9 @@ export default function DriftClient() {
                               Size
                             </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                              Side
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                               Notional
                             </th>
                           </tr>
@@ -1203,6 +1459,15 @@ export default function DriftClient() {
                                   minimumFractionDigits: 2,
                                   maximumFractionDigits: 6,
                                 })}
+                              </td>
+                              <td
+                                className={`px-6 py-4 whitespace-nowrap ${
+                                  position.side === 'buy'
+                                    ? 'text-green-600'
+                                    : 'text-red-600'
+                                }`}
+                              >
+                                {position.side}
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 $
