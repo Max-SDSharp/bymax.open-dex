@@ -1,10 +1,13 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { JetBrains_Mono } from 'next/font/google'
 
 import './globals.css'
-import { ThemeProvider } from '@/components'
+import { ThemeProvider, Navbar } from '@/components'
 
-const inter = Inter({ subsets: ['latin'] })
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'Bymax OpenDEX',
@@ -19,9 +22,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.className} bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white`}
+        className={`${jetbrainsMono.className} bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-white`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <Navbar />
+          <main className="pt-16">{children}</main>
+        </ThemeProvider>
       </body>
     </html>
   )

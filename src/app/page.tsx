@@ -1,4 +1,4 @@
-import DexDemo from '@/components/DexDemo'
+import DexDemo from '@/components/drift/DexDemo'
 
 export default function Home() {
   return (
