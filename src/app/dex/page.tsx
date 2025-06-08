@@ -3,13 +3,16 @@
 import dynamic from 'next/dynamic'
 
 // Use dynamic import for DriftClient to avoid SSR issues
-const DriftTestClient = dynamic(() => import('../../components/DriftClient'), {
-  ssr: false,
-})
+const DriftTestClient = dynamic(
+  () => import('../../components/drift/DriftClient'),
+  {
+    ssr: false,
+  },
+)
 
 // Use dynamic import for SolanaWalletProvider to avoid SSR issues
 const SolanaWalletProvider = dynamic(
-  () => import('../../components/SolanaWalletProvider'),
+  () => import('../../components/drift/SolanaWalletProvider'),
   { ssr: false },
 )
 

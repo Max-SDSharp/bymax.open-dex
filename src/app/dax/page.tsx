@@ -20,7 +20,7 @@ const DriftMarketData = dynamic(
 
 // Use dynamic import for SolanaWalletProvider to avoid SSR issues
 const SolanaWalletProvider = dynamic(
-  () => import('../../components/SolanaWalletProvider'),
+  () => import('../../components/drift/SolanaWalletProvider'),
   { ssr: false },
 )
 
