@@ -28,7 +28,7 @@ export default function PositionsTable() {
   return (
     <div className="bg-secondary/20 rounded-lg overflow-hidden">
       <div className="flex items-center px-4 py-2 border-b border-border">
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 overflow-x-auto w-full">
           <button className="px-4 py-1 border-b-2 border-primary text-foreground font-medium">
             Positions
           </button>
