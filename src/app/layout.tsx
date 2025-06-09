@@ -3,7 +3,7 @@ import { JetBrains_Mono } from 'next/font/google'
 
 import './globals.css'
 import { ThemeProvider, Navbar } from '@/components'
-import Footer from '@/components/ui/navbar/footer/footer'
+import Footer from '@/components/ui/footer/footer'
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
