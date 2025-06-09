@@ -92,7 +92,7 @@ export default function TradingViewChart() {
   }
 
   return (
-    <div className="relative w-[695px] h-[470px]">
+    <div className="relative w-full h-[470px]">
       <div
         id="tradingview_chart"
         ref={tvChartContainerRef}
