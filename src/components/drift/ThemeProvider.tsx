@@ -13,21 +13,40 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
 
   // Apply theme when component is mounted
   useEffect(() => {
-    // Set initial theme
-    const savedTheme =
-      (localStorage.getItem('theme') as 'light' | 'dark') ||
-      (window.matchMedia('(prefers-color-scheme: dark)').matches
+    // Function to get system theme preference
+    const getSystemTheme = () => {
+      if (typeof window === 'undefined') return 'light'
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
-        : 'light')
+        : 'light'
+    }
 
-    setTheme(savedTheme)
+    // Function to handle system theme changes
+    const handleSystemThemeChange = (e: MediaQueryListEvent) => {
+      const newTheme = e.matches ? 'dark' : 'light'
+      if (!localStorage.getItem('theme')) {
+        setTheme(newTheme)
+      }
+    }
+
+    // Set initial theme
+    const savedTheme = localStorage.getItem('theme')
+    const initialTheme = savedTheme || getSystemTheme()
+    setTheme(initialTheme as 'light' | 'dark')
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    mediaQuery.addEventListener('change', handleSystemThemeChange)
 
     // Add script to avoid theme flash during loading
     const script = document.createElement('script')
     script.innerHTML = `
       (function() {
         try {
-          const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          const savedTheme = localStorage.getItem('theme');
+          const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          const theme = savedTheme || systemTheme;
+          
           if (theme === 'dark') {
             document.documentElement.classList.add('dark');
           } else {
@@ -42,6 +61,7 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
       if (script.parentNode) {
         script.parentNode.removeChild(script)
       }
+      mediaQuery.removeEventListener('change', handleSystemThemeChange)
     }
   }, [setTheme])
 
