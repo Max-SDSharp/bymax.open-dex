@@ -9,7 +9,7 @@ import { cn } from '@/utils/classNames'
 interface DrawerProps {
   isOpen: boolean
   onClose: () => void
-  children: React.ReactNode
+  children?: React.ReactNode
   title?: string
 }
 
@@ -17,7 +17,7 @@ const Drawer: React.FC<DrawerProps> = ({
   isOpen,
   onClose,
   children,
-  title = 'Wallet',
+  title,
 }) => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -61,7 +61,7 @@ const Drawer: React.FC<DrawerProps> = ({
               <IoClose className="h-5 w-5" />
             </button>
           </div>
-          {children}
+          <div className="flex flex-col h-full">{children}</div>
         </div>
       </div>
     </>

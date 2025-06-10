@@ -1,4 +1,4 @@
-// Definições globais de tipo
+// Global type definitions
 
 interface TradingViewWidgetConfig {
   autosize?: boolean
@@ -26,7 +26,7 @@ interface TradingViewWidgetConfig {
 declare global {
   interface Window {
     TradingView?: {
-      widget: new (config: TradingViewWidgetConfig) => unknown
+      widget: new (config: TradingViewWidgetConfig) => any
     }
   }
 }

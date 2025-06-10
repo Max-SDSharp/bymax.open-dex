@@ -1,11 +1,13 @@
 'use client'
 
-import { BsSun, BsMoon } from 'react-icons/bs'
+import React from 'react'
 
-import { useThemeStore } from '@/store/useThemeStore'
+import { FaMoon, FaSun } from 'react-icons/fa'
 
-export default function NavbarTheme() {
-  const { theme, toggleTheme } = useThemeStore()
+import { theme } from '@/store/theme'
+
+const NavbarTheme: React.FC = () => {
+  const { theme: currentTheme, toggleTheme } = theme()
 
   return (
     <div className="flex items-center justify-end">
@@ -14,15 +16,19 @@ export default function NavbarTheme() {
         className="p-2 hover:bg-transparent focus:outline-none"
         aria-label="Toggle theme"
         title={
-          theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'
+          currentTheme === 'dark'
+            ? 'Switch to light theme'
+            : 'Switch to dark theme'
         }
       >
-        {theme === 'light' ? (
-          <BsMoon className="mt-1" size="17px" />
+        {currentTheme === 'dark' ? (
+          <FaSun className="mt-1" size="17px" />
         ) : (
-          <BsSun className="mt-1" size="17px" />
+          <FaMoon className="mt-1" size="17px" />
         )}
       </button>
     </div>
   )
 }
+
+export default NavbarTheme

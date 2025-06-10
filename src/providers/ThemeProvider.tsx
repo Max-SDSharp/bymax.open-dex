@@ -1,15 +1,15 @@
 'use client'
 
-import { useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 
-import { useThemeStore } from '@/store/useThemeStore'
+import { theme } from '@/store/theme'
 
 interface ThemeProviderProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export default function ThemeProvider({ children }: ThemeProviderProps) {
-  const { setTheme } = useThemeStore()
+  const { setTheme } = theme()
 
   // Apply theme when component is mounted
   useEffect(() => {
@@ -65,5 +65,5 @@ export default function ThemeProvider({ children }: ThemeProviderProps) {
     }
   }, [setTheme])
 
-  return children
+  return <>{children}</>
 }

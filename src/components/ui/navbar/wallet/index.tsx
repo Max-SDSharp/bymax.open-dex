@@ -1,21 +1,33 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 
 import { FaWallet } from 'react-icons/fa'
 
-interface NavbarWalletProps {
-  onOpen: () => void
-}
+import Accounts from '@/components/accounts'
 
-const NavbarWallet: React.FC<NavbarWalletProps> = ({ onOpen }) => {
+const NavbarWallet: React.FC = () => {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+  const handleOpenDrawer = () => {
+    setIsDrawerOpen(true)
+  }
+
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false)
+  }
+
   return (
     <div className="flex items-center justify-end">
       <button
         aria-label="Wallet"
-        onClick={onOpen}
+        onClick={handleOpenDrawer}
         className="p-2 hover:bg-transparent focus:outline-none"
       >
         <FaWallet className="mt-1" size="17px" />
       </button>
+
+      <Accounts isOpen={isDrawerOpen} onClose={handleCloseDrawer} />
     </div>
   )
 }

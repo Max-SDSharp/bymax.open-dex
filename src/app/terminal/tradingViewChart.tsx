@@ -2,12 +2,12 @@
 
 import { useRef, useEffect, useState } from 'react'
 
-import { useThemeStore } from '@/store/useThemeStore'
+import { theme } from '@/store/theme'
 
 export default function TradingViewChart() {
   const tvChartContainerRef = useRef<HTMLDivElement>(null)
   const [isClient, setIsClient] = useState(false)
-  const { theme } = useThemeStore()
+  const { theme: currentTheme } = theme()
 
   useEffect(() => {
     setIsClient(true)
@@ -17,10 +17,10 @@ export default function TradingViewChart() {
     if (!isClient || !tvChartContainerRef.current) return
 
     try {
-      // Limpar o container antes de adicionar o widget
+      // Clear the container before adding the widget
       tvChartContainerRef.current.innerHTML = ''
 
-      // Criar um novo elemento de script
+      // Create a new script element
       const script = document.createElement('script')
       script.src = 'https://s3.tradingview.com/tv.js'
       script.async = true
@@ -29,22 +29,22 @@ export default function TradingViewChart() {
           typeof window.TradingView !== 'undefined' &&
           tvChartContainerRef.current
         ) {
-          // Mapear o par selecionado para o formato da Binance
-          // O formato da Binance geralmente é BTCUSDT, ETHUSDT, etc.
+          // Map the selected pair to Binance format
+          // Binance format is typically BTCUSDT, ETHUSDT, etc.
           const symbol = `BINANCE:BTCUSDT`
 
-          // Mapear o timeframe para o formato do TradingView
-          const tvInterval = 'D'
+          // Map the timeframe to TradingView format
+          const interval = 'D'
 
           new window.TradingView.widget({
+            symbol,
+            interval,
             autosize: true,
-            symbol: symbol,
-            interval: tvInterval,
             timezone: 'Etc/UTC',
-            theme: theme,
+            theme: currentTheme === 'dark' ? 'dark' : 'light',
             style: '1',
             locale: 'en',
-            toolbar_bg: theme === 'dark' ? '#0f172a' : '#ffffff',
+            toolbar_bg: currentTheme === 'dark' ? '#0f172a' : '#ffffff',
             enable_publishing: false,
             hide_top_toolbar: false,
             hide_legend: false,
@@ -53,19 +53,15 @@ export default function TradingViewChart() {
             details: false,
             hotlist: false,
             calendar: false,
-            // studies: [
-            //   'MASimple@tv-basicstudies',
-            //   'RSI@tv-basicstudies',
-            //   'MACD@tv-basicstudies',
-            // ],
-            container_id: tvChartContainerRef.current.id,
+            studies: [],
+            container_id: 'tradingview_chart',
           })
         }
       }
 
       document.head.appendChild(script)
 
-      // Limpeza
+      // Cleanup
       return () => {
         if (document.head.contains(script)) {
           document.head.removeChild(script)
@@ -81,7 +77,7 @@ export default function TradingViewChart() {
         `
       }
     }
-  }, [isClient, theme])
+  }, [isClient, currentTheme])
 
   if (!isClient) {
     return (

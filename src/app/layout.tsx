@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import { JetBrains_Mono } from 'next/font/google'
 
 import './globals.css'
-import { ThemeProvider, Navbar } from '@/components'
+import { Navbar } from '@/components'
 import Footer from '@/components/ui/footer/footer'
+import { ThemeProvider, SolanaProvider } from '@/providers'
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -11,6 +12,7 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://dex.bymax.trade'),
   title: 'Bymax OpenDEX',
   description: 'A decentralized exchange (DEX) interface',
   icons: {
@@ -64,11 +66,13 @@ export default function RootLayout({
       <body
         className={`${jetbrainsMono.className} bg-gray-25 text-gray-900 dark:bg-gray-900 dark:text-white`}
       >
-        <ThemeProvider>
-          <Navbar />
-          <main className="pt-16">{children}</main>
-          <Footer />
-        </ThemeProvider>
+        <SolanaProvider>
+          <ThemeProvider>
+            <Navbar />
+            <main className="pt-16">{children}</main>
+            <Footer />
+          </ThemeProvider>
+        </SolanaProvider>
       </body>
     </html>
   )
