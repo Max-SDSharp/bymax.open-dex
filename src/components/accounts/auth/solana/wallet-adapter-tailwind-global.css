@@ -10,14 +10,14 @@
     color: var(--foreground) !important;
   }
   .wallet-adapter-modal-wrapper {
-    background-color: var(--card) !important;
+    background-color: var(--background) !important;
     color: var(--foreground) !important;
     border-radius: 0.625rem !important;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
     font-family: var(--font-jetbrains), monospace !important;
   }
   .wallet-adapter-button {
-    background-color: var(--card) !important;
+    background-color: var(--background) !important;
     color: var(--foreground) !important;
     border: none !important;
     border-radius: 0.25rem !important;
@@ -28,7 +28,7 @@
     background-color: var(--secondary) !important;
   }
   .wallet-adapter-modal-list {
-    background-color: var(--card) !important;
+    background-color: var(--background) !important;
     border: none !important;
   }
   .wallet-adapter-modal-list .wallet-adapter-button {
@@ -73,7 +73,7 @@
     background-color: var(--secondary) !important;
   }
   .dark .wallet-adapter-modal-list {
-    background-color: var(--card) !important;
+    background-color: var(--background) !important;
   }
   .dark .wallet-adapter-modal-list .wallet-adapter-button {
     color: var(--foreground) !important;
