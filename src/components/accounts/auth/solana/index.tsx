@@ -7,7 +7,7 @@ import { user } from '@/store/user'
 import { formatWalletAddress } from '@/utils/wallet'
 
 // Import wallet adapter styles
-import '@solana/wallet-adapter-react-ui/styles.css'
+import './wallet-adapter-tailwind-global.css'
 
 interface SolanaComponentProps {
   onClose: () => void

@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .wallet-adapter-modal {
+    z-index: 50 !important;
+  }
+  .wallet-adapter-modal-title {
+    color: var(--foreground) !important;
+  }
+  .wallet-adapter-modal-wrapper {
+    background-color: var(--card) !important;
+    color: var(--foreground) !important;
+    border-radius: 0.625rem !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+    font-family: var(--font-jetbrains), monospace !important;
+  }
+  .wallet-adapter-button {
+    background-color: var(--card) !important;
+    color: var(--foreground) !important;
+    border: none !important;
+    border-radius: 0.25rem !important;
+    height: 3rem !important;
+    font-weight: 500 !important;
+  }
+  .wallet-adapter-button:hover {
+    background-color: var(--secondary) !important;
+  }
+  .wallet-adapter-modal-list {
+    background-color: var(--card) !important;
+    border: none !important;
+  }
+  .wallet-adapter-modal-list .wallet-adapter-button {
+    color: var(--foreground) !important;
+    border: none !important;
+    font-family: var(--font-jetbrains), monospace !important;
+  }
+  .wallet-adapter-modal-list-more {
+    color: var(--foreground) !important;
+  }
+  .wallet-adapter-modal-button-close {
+    background-color: var(--secondary) !important;
+  }
+  .wallet-adapter-modal-button-close:hover svg {
+    fill: var(--foreground) !important;
+  }
+  .wallet-adapter-dropdown-list {
+    background-color: var(--card) !important;
+    border: none !important;
+  }
+  .wallet-adapter-dropdown-list-item {
+    color: var(--foreground) !important;
+    border: none !important;
+  }
+  .wallet-adapter-dropdown-list-item:hover {
+    background-color: var(--secondary) !important;
+  }
+
+  /* Dark theme */
+  .dark .wallet-adapter-modal-wrapper {
+    background-color: var(--background) !important;
+    color: var(--foreground) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+    font-family: var(--font-jetbrains), monospace !important;
+  }
+  .dark .wallet-adapter-button {
+    background-color: var(--background) !important;
+    color: var(--foreground) !important;
+    border: none !important;
+  }
+  .dark .wallet-adapter-button:hover {
+    background-color: var(--secondary) !important;
+  }
+  .dark .wallet-adapter-modal-list {
+    background-color: var(--card) !important;
+  }
+  .dark .wallet-adapter-modal-list .wallet-adapter-button {
+    color: var(--foreground) !important;
+    font-family: var(--font-jetbrains), monospace !important;
+  }
+  .dark .wallet-adapter-modal-list-more {
+    color: var(--foreground) !important;
+  }
+  .dark .wallet-adapter-modal-button-close {
+    background-color: var(--secondary) !important;
+  }
+  .dark .wallet-adapter-modal-button-close:hover svg {
+    fill: var(--foreground) !important;
+  }
+  .dark .wallet-adapter-dropdown-list {
+    background-color: var(--card) !important;
+    border: none !important;
+  }
+  .dark .wallet-adapter-dropdown-list-item {
+    color: var(--foreground) !important;
+  }
+  .dark .wallet-adapter-dropdown-list-item:hover {
+    background-color: var(--card) !important;
+  }
+}
