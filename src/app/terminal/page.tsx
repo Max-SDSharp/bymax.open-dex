@@ -41,7 +41,9 @@ export default function Terminal() {
         setTimeout(waitForConnection, 200)
       }
     }
+
     waitForConnection()
+
     return () => {
       websocketService.send({
         type: 'unsubscribe',
