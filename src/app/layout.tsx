@@ -4,6 +4,7 @@ import { JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import { Navbar } from '@/components'
 import Footer from '@/components/ui/footer/footer'
+import WebSocketProcess from '@/processes/websocketProcess'
 import { ThemeProvider, SolanaProvider } from '@/providers'
 
 const jetbrainsMono = JetBrains_Mono({
@@ -68,6 +69,7 @@ export default function RootLayout({
       >
         <SolanaProvider>
           <ThemeProvider>
+            <WebSocketProcess />
             <Navbar />
             <main className="pt-16">{children}</main>
             <Footer />

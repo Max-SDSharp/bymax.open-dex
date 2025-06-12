@@ -24,7 +24,6 @@ class WebSocketService {
    * @returns Promise that resolves when connection is established
    */
   connect(): Promise<void> {
-    console.log('connect', this.isConnected)
     if (this.isConnected) {
       return Promise.resolve()
     }
