@@ -31,7 +31,7 @@ export default function TradingViewChart() {
         ) {
           // Map the selected pair to Binance format
           // Binance format is typically BTCUSDT, ETHUSDT, etc.
-          const symbol = `BINANCE:BTCUSDT`
+          const symbol = `BINANCE:SOLUSDT`
 
           // Map the timeframe to TradingView format
           const interval = 'D'
