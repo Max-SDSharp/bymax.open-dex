@@ -161,6 +161,14 @@ class WebSocketService {
     return this.isConnected
   }
 
+  /**
+   * Attempt to reconnect to the WebSocket server
+   * Implements an exponential backoff strategy with a maximum number of attempts
+   * Will not attempt to reconnect if:
+   * - A reconnection is already in progress
+   * - Maximum reconnect attempts have been reached
+   * - The disconnect was intentional
+   */
   private attemptReconnect() {
     if (
       this.reconnectTimer ||
@@ -180,6 +188,11 @@ class WebSocketService {
     }, this.reconnectDelay)
   }
 
+  /**
+   * Start the heartbeat mechanism
+   * Sends a ping message to the server every 30 seconds
+   * to keep the connection alive and detect disconnections early
+   */
   private startHeartbeat() {
     this.stopHeartbeat()
     this.heartbeatInterval = setInterval(() => {
@@ -191,6 +204,11 @@ class WebSocketService {
     }, 30000)
   }
 
+  /**
+   * Stop the heartbeat mechanism
+   * Clears the heartbeat interval to prevent memory leaks
+   * and unnecessary network traffic when disconnected
+   */
   private stopHeartbeat() {
     if (this.heartbeatInterval) {
       clearInterval(this.heartbeatInterval)
