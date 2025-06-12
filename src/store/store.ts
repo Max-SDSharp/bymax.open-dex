@@ -13,7 +13,7 @@ import { immer } from 'zustand/middleware/immer'
  */
 export const createStore = <T extends object>(
   initializer: (set: any, get: any, store: any) => T,
-  storeName: string = 'storage',
+  storeName: string = 'bymax-storage',
 ) => {
   return create<T>()(
     devtools(

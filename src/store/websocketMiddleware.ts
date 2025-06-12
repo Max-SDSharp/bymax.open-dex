@@ -10,6 +10,7 @@ import WebsocketService from '@/services/websocketService'
  */
 export enum WebSocketEventType {
   ORDER_BOOK = 'orderbook_perp',
+  TRADES = 'trades_perp',
 }
 
 /**
