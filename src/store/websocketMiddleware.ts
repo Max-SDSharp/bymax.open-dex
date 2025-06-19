@@ -31,6 +31,39 @@ interface OrderBookData {
 }
 
 /**
+ * Interface for trade data structure
+ */
+interface TradeData {
+  ts: number
+  marketIndex: number
+  marketType: string
+  filler: string
+  takerFee: number
+  makerFee: number
+  quoteAssetAmountSurplus: number
+  baseAssetAmountFilled: number
+  quoteAssetAmountFilled: number
+  taker: string
+  takerOrderId: number
+  takerOrderDirection: 'long' | 'short'
+  takerOrderBaseAssetAmount: number
+  takerOrderCumulativeBaseAssetAmountFilled: number
+  takerOrderCumulativeQuoteAssetAmountFilled: number
+  makerOrderId: number | null
+  makerOrderBaseAssetAmount: number
+  makerOrderCumulativeBaseAssetAmountFilled: number
+  makerOrderCumulativeQuoteAssetAmountFilled: number
+  oraclePrice: number
+  txSig: string
+  slot: number
+  fillRecordId: number
+  action: string
+  actionExplanation: string
+  referrerReward: number
+  bitFlags: number
+}
+
+/**
  * Interface for WebSocket message structure
  *
  * @property channel - The message channel or event type
@@ -76,14 +109,21 @@ export const websocket = create<WebSocketState>()(
           const orderBookData = JSON.parse(data) as OrderBookData
           // Ensure that bids and asks have at most 10 elements
           if (Array.isArray(orderBookData.bids)) {
-            orderBookData.bids = orderBookData.bids.slice(0, 10)
+            orderBookData.bids = orderBookData.bids.slice(0, 8)
           }
           if (Array.isArray(orderBookData.asks)) {
-            orderBookData.asks = orderBookData.asks.slice(0, 10)
+            orderBookData.asks = orderBookData.asks.slice(0, 8)
           }
           monitor.getState().addMonitor({
             id: `${channel}_${orderBookData.marketName}`,
             data: orderBookData,
+            lastUpdate: Date.now(),
+          })
+        } else if (channel?.includes(WebSocketEventType.TRADES)) {
+          const tradeData = JSON.parse(data) as TradeData
+          monitor.getState().addMonitorHistory({
+            id: `${channel}`,
+            data: tradeData,
             lastUpdate: Date.now(),
           })
         }
