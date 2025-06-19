@@ -6,6 +6,7 @@ import { immer } from 'zustand/middleware/immer'
 import { monitor } from './monitor'
 
 import WebsocketService from '@/services/websocketService'
+import { OrderBookData, TradeData } from '@/types'
 
 /**
  * Enum defining WebSocket event channel types
@@ -13,54 +14,6 @@ import WebsocketService from '@/services/websocketService'
 export enum WebSocketEventType {
   ORDER_BOOK = 'orderbook_perp',
   TRADES = 'trades_perp',
-}
-
-/**
- * Interface for order book data structure
- *
- * @property marketName - Name of the market
- * @property bids - Array of bid orders with price, size, and total
- * @property asks - Array of ask orders with price, size, and total
- * @property oracle - Oracle price value
- */
-interface OrderBookData {
-  marketName: string
-  bids: Array<{ price: number; size: number; total: number }>
-  asks: Array<{ price: number; size: number; total: number }>
-  oracle: number
-}
-
-/**
- * Interface for trade data structure
- */
-interface TradeData {
-  ts: number
-  marketIndex: number
-  marketType: string
-  filler: string
-  takerFee: number
-  makerFee: number
-  quoteAssetAmountSurplus: number
-  baseAssetAmountFilled: number
-  quoteAssetAmountFilled: number
-  taker: string
-  takerOrderId: number
-  takerOrderDirection: 'long' | 'short'
-  takerOrderBaseAssetAmount: number
-  takerOrderCumulativeBaseAssetAmountFilled: number
-  takerOrderCumulativeQuoteAssetAmountFilled: number
-  makerOrderId: number | null
-  makerOrderBaseAssetAmount: number
-  makerOrderCumulativeBaseAssetAmountFilled: number
-  makerOrderCumulativeQuoteAssetAmountFilled: number
-  oraclePrice: number
-  txSig: string
-  slot: number
-  fillRecordId: number
-  action: string
-  actionExplanation: string
-  referrerReward: number
-  bitFlags: number
 }
 
 /**

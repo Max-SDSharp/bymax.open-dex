@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react'
 
 import { monitor } from '@/store/monitor'
-import { Trade } from '@/types'
+import { TradeData } from '@/types'
 
 export default function RecentTrades() {
-  const [trades, setTrades] = useState<Trade[]>([])
+  const [trades, setTrades] = useState<TradeData[]>([])
   const monitors = monitor((state) =>
     state.items.find((m) => m.id?.includes('trades_perp')),
   )
@@ -44,7 +44,7 @@ export default function RecentTrades() {
     )
   }
 
-  const formatPrice = (trade: Trade) => {
+  const formatPrice = (trade: TradeData) => {
     if (!trade?.quoteAssetAmountFilled || !trade?.baseAssetAmountFilled)
       return null
     return (trade.quoteAssetAmountFilled / trade.baseAssetAmountFilled).toFixed(
@@ -52,12 +52,12 @@ export default function RecentTrades() {
     )
   }
 
-  const formatSize = (trade: Trade) => {
+  const formatSize = (trade: TradeData) => {
     if (!trade?.baseAssetAmountFilled) return null
     return trade.baseAssetAmountFilled.toFixed(4)
   }
 
-  const formatTime = (trade: Trade) => {
+  const formatTime = (trade: TradeData) => {
     if (!trade?.ts) return null
     return new Date(trade.ts * 1000).toLocaleTimeString()
   }

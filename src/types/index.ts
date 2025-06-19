@@ -1,4 +1,17 @@
-export interface Trade {
+/**
+ * Interface for order book data structure
+ */
+export interface OrderBookData {
+  marketName: string
+  bids: Array<{ price: number; size: number; total: number }>
+  asks: Array<{ price: number; size: number; total: number }>
+  oracle: number
+}
+
+/**
+ * Interface for trade data structure
+ */
+export interface TradeData {
   ts: number
   marketIndex: number
   marketType: string
