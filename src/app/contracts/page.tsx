@@ -4,10 +4,7 @@ import React, { useEffect } from 'react'
 
 import { useDriftContracts } from '../../hooks/useDriftContracts'
 
-/**
- * Example component demonstrating how to use the Drift API service
- */
-export const DriftContractsExample: React.FC = () => {
+export default function DriftContracts() {
   const {
     contracts,
     loading,
@@ -151,5 +148,3 @@ export const DriftContractsExample: React.FC = () => {
     </div>
   )
 }
-
-export default DriftContractsExample
