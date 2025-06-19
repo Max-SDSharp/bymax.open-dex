@@ -70,7 +70,7 @@ const SolanaComponent: React.FC<SolanaComponentProps> = ({
         <button
           className={`w-full px-4 py-3 flex items-center justify-between ${
             currentIndex === index
-              ? 'bg-gray-100 dark:bg-gray-800'
+              ? 'bg-gray-100 dark:bg-gray-700'
               : 'bg-white dark:bg-gray-900'
           }`}
           onClick={() => onAccordionChange(index)}
@@ -99,7 +99,7 @@ const SolanaComponent: React.FC<SolanaComponentProps> = ({
               {!wallet || !publicKey ? (
                 <div className="w-full">
                   <button
-                    className="w-full h-[58px] bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full h-[58px] bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleOpenWalletModal}
                     disabled={connecting}
                   >
