@@ -13,36 +13,6 @@
   scrollbar-width: none; /* Firefox */
 }
 
-:root {
-  /* Light theme (default) */
-  --background: #ffffff;
-  --foreground: #101010;
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --secondary: #efefef;
-  --card: #ffffff;
-  --border: #c6c6c6;
-  --input: #efefef;
-  --success: #10b981;
-  --error: #ef4444;
-  --warning: #f59e0b;
-}
-
-.dark {
-  /* Dark theme */
-  --background: #101010;
-  --foreground: #ffffff;
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --secondary: #1a1a1a;
-  --card: #343434;
-  --border: #4d4d4d;
-  --input: #616161;
-  --success: #10b981;
-  --error: #ef4444;
-  --warning: #f59e0b;
-}
-
 body {
   background: var(--background);
   color: var(--foreground);

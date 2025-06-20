@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
+import plugin from 'tailwindcss/plugin'
 
-import { colors } from './src/styles/colors'
+import { colors, themeColors } from './src/styles/colors'
 
 const config: Config = {
   content: [
@@ -50,7 +51,30 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ addBase }) {
+      const lightVars = Object.entries(themeColors.light).reduce(
+        (acc, [key, value]) => {
+          acc[`--${key}`] = value
+          return acc
+        },
+        {} as Record<string, string>,
+      )
+
+      const darkVars = Object.entries(themeColors.dark).reduce(
+        (acc, [key, value]) => {
+          acc[`--${key}`] = value
+          return acc
+        },
+        {} as Record<string, string>,
+      )
+
+      addBase({
+        ':root': lightVars,
+        '.dark': darkVars,
+      })
+    }),
+  ],
 }
 
 export default config
