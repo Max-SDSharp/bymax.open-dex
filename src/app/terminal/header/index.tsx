@@ -19,7 +19,7 @@ const HeaderInformation: React.FC = () => {
           {/* Other header info can go here */}
         </div>
       </div>
-      <hr className="border-gray-600" />
+      <hr className="border-border" />
     </div>
   )
 }
