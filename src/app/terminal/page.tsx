@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 
+import HeaderInformation from './header'
 import OrderBook from './orderBook'
 import RecentTrades from './recentTrades'
 import TradeForm from './tradeForm'
@@ -15,6 +16,7 @@ export default function Terminal() {
 
   return (
     <div className="flex flex-col h-full w-full p-4 gap-4">
+      <HeaderInformation />
       <div className="flex flex-col md:flex-row flex-1 gap-4">
         <div className="w-full md:w-[55%] bg-background-secondary p-4 rounded-lg border border-border h-[500px]">
           <TradingViewChart />
