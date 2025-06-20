@@ -36,56 +36,61 @@ interface MonitorState {
  * Monitor store for tracking data from various sources
  * Uses persistent storage with a unique key 'monitor-storage'
  */
-export const monitor = createStore<MonitorState>((set) => ({
-  items: [],
+export const monitor = createStore<MonitorState>(
+  (set) => ({
+    items: [],
 
-  addMonitor: (monitor) => {
-    set((state: Draft<MonitorState>) => {
-      const idx = state.items.findIndex((i: MonitorData) => i.id === monitor.id)
+    addMonitor: (monitor) => {
+      set((state: Draft<MonitorState>) => {
+        const idx = state.items.findIndex(
+          (i: MonitorData) => i.id === monitor.id,
+        )
 
-      if (idx >= 0) {
-        // Update existing monitor data
-        state.items[idx] = monitor
-      } else {
-        // Add new monitor data
-        state.items.push(monitor)
-      }
-    })
-  },
+        if (idx >= 0) {
+          // Update existing monitor data
+          state.items[idx] = monitor
+        } else {
+          // Add new monitor data
+          state.items.push(monitor)
+        }
+      })
+    },
 
-  addMonitorHistory: (trade: any) =>
-    set((state: Draft<MonitorState>) => {
-      const existingItem = state.items.find((i) => i.id === trade.id)
+    addMonitorHistory: (trade: any) =>
+      set((state: Draft<MonitorState>) => {
+        const existingItem = state.items.find((i) => i.id === trade.id)
 
-      if (existingItem) {
-        // If we already have a trade history, update it
-        const currentTrades = Array.isArray(existingItem.data)
-          ? existingItem.data
-          : [existingItem.data]
+        if (existingItem) {
+          // If we already have a trade history, update it
+          const currentTrades = Array.isArray(existingItem.data)
+            ? existingItem.data
+            : [existingItem.data]
 
-        // Add new trade to the beginning of the array
-        const updatedTrades = [trade, ...currentTrades].slice(0, 10)
+          // Add new trade to the beginning of the array
+          const updatedTrades = [trade, ...currentTrades].slice(0, 10)
 
-        existingItem.data = updatedTrades
-        existingItem.lastUpdate = Date.now()
-      } else {
-        // If this is the first trade, create a new history
-        state.items.push({
-          id: trade.id,
-          data: [trade],
-          lastUpdate: Date.now(),
-        })
-      }
-    }),
+          existingItem.data = updatedTrades
+          existingItem.lastUpdate = Date.now()
+        } else {
+          // If this is the first trade, create a new history
+          state.items.push({
+            id: trade.id,
+            data: [trade],
+            lastUpdate: Date.now(),
+          })
+        }
+      }),
 
-  removeMonitor: (id) => {
-    set((state: Draft<MonitorState>) => {
-      state.items = state.items.filter((m: MonitorData) => m.id !== id)
-    })
-  },
+    removeMonitor: (id) => {
+      set((state: Draft<MonitorState>) => {
+        state.items = state.items.filter((m: MonitorData) => m.id !== id)
+      })
+    },
 
-  clearMonitor: () =>
-    set((state: Draft<MonitorState>) => {
-      state.items = []
-    }),
-}))
+    clearMonitor: () =>
+      set((state: Draft<MonitorState>) => {
+        state.items = []
+      }),
+  }),
+  'monitor-storage',
+)
