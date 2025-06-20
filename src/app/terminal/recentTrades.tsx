@@ -28,6 +28,8 @@ export default function RecentTrades() {
         if (validTrades.length > 0) {
           setTrades((prevTrades) => {
             const newTrades = [...validTrades, ...prevTrades]
+            // Sort trades by timestamp in descending order
+            newTrades.sort((a, b) => b.ts - a.ts)
             // Keep only the last maxTrades trades
             return newTrades.slice(0, maxTrades)
           })
