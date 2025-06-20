@@ -71,7 +71,7 @@ export default function RootLayout({
           <ThemeProvider>
             <WebSocketProcess />
             <Navbar />
-            <main className="pt-16">{children}</main>
+            <main>{children}</main>
             <Footer />
           </ThemeProvider>
         </SolanaProvider>
