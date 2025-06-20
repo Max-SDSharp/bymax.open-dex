@@ -1,6 +1,4 @@
 // next.config.js
-import path from 'path'
-
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
@@ -50,26 +48,23 @@ const nextConfig: NextConfig = {
 
     return config
   },
-  experimental: {
-    turbo: {
-      root: path.resolve(__dirname, '..'),
-      resolveAlias: {
-        '@drift-labs/sdk': '../drift-common/protocol/sdk',
-        '@drift-labs/icons': '../drift-common/icons/dist/',
-        '@drift/common': '../drift-common/common-ts/lib/index.js',
-        '@drift-labs/react': '../drift-common/react/lib/index.js',
-        react: './node_modules/@types/react',
-        fs: { browser: './node-browser-compatibility.js' },
-        net: { browser: './node-browser-compatibility.js' },
-        dns: { browser: './node-browser-compatibility.js' },
-        tls: { browser: './node-browser-compatibility.js' },
-        crypto: { browser: 'crypto-browserify' },
-      },
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  turbopack: {
+    resolveAlias: {
+      '@drift-labs/sdk': '../drift-common/protocol/sdk',
+      '@drift-labs/icons': '../drift-common/icons/dist/',
+      '@drift/common': '../drift-common/common-ts/lib/index.js',
+      '@drift-labs/react': '../drift-common/react/lib/index.js',
+      react: './node_modules/@types/react',
+      fs: { browser: './node-browser-compatibility.js' },
+      net: { browser: './node-browser-compatibility.js' },
+      dns: { browser: './node-browser-compatibility.js' },
+      tls: { browser: './node-browser-compatibility.js' },
+      crypto: { browser: 'crypto-browserify' },
+    },
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },
