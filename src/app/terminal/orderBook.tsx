@@ -63,7 +63,7 @@ export default function OrderBook() {
               key={`bid-${index}`}
               className="grid grid-cols-2 text-xs py-0.5 px-2 hover:bg-green-900/20"
               style={{
-                background: `linear-gradient(to left, rgba(16, 185, 129, ${(index + 1) * 0.05}) 0%, rgba(16, 185, 129, 0) 100%)`,
+                background: `linear-gradient(to left, rgba(16, 185, 129, ${(bids.length - index) * 0.05}) 0%, rgba(16, 185, 129, 0) 100%)`,
               }}
             >
               <div className="text-success font-mono">
