@@ -60,12 +60,11 @@ export const websocket = create<WebSocketState>()(
 
         if (channel?.includes(WebSocketEventType.ORDER_BOOK)) {
           const orderBookData = JSON.parse(data) as OrderBookData
-          // Ensure that bids and asks have at most 10 elements
           if (Array.isArray(orderBookData.bids)) {
-            orderBookData.bids = orderBookData.bids.slice(0, 8)
+            orderBookData.bids = orderBookData.bids.slice(0, 9)
           }
           if (Array.isArray(orderBookData.asks)) {
-            orderBookData.asks = orderBookData.asks.slice(0, 8)
+            orderBookData.asks = orderBookData.asks.slice(0, 9)
           }
           monitor.getState().addMonitor({
             id: `${channel}_${orderBookData.marketName}`,
