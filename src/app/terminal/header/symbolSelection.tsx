@@ -2,22 +2,25 @@
 
 import React, { useMemo, useEffect, useCallback } from 'react'
 
-import SelectWithValidation from '@/components/ui/bymaxReactSelect'
+import Select from '@/components/ui/bymaxReactSelect'
 import { useDriftContracts } from '@/hooks/useDriftContracts'
-import { DriftContract } from '@/services/driftContracts/driftContractsService'
 import { monitor } from '@/store/monitor'
 import { useTradeStore, TradeOption } from '@/store/trade'
+import { DriftContract } from '@/types'
+
+// Symbols list allowed
+const ALLOWED_SYMBOLS = ['SOL', 'BTC', 'ETH', 'DRIFT', 'JUP', 'HYPE']
+
+// Default symbol
+const tokenDefault = 'SOL'
 
 const SymbolSelection: React.FC = () => {
   const { loading, fetchContracts, error } = useDriftContracts()
-  const { selectedSymbol, setSelectedSymbol, selectedQuote, setSelectedQuote } =
-    useTradeStore()
+  const { selectedSymbol, setSelectedSymbol } = useTradeStore()
 
   const contracts = monitor(
     (state) => state.items.find((item) => item.id === 'contracts')?.data || [],
   ) as DriftContract[]
-
-  const quoteTokenDefault = 'USDC' // Using USDC as a common quote currency in Solana
 
   const onFetchContracts = useCallback(async () => {
     await fetchContracts()
@@ -29,28 +32,14 @@ const SymbolSelection: React.FC = () => {
     }
   }, [contracts.length, onFetchContracts])
 
-  useEffect(() => {
-    if (contracts.length > 0 && !selectedQuote) {
-      // Create a dummy option for the default quote token
-      const quoteOption: TradeOption = {
-        id: quoteTokenDefault,
-        value: quoteTokenDefault,
-        label: quoteTokenDefault,
-        base: quoteTokenDefault,
-        quote: '',
-      }
-      setSelectedQuote(quoteOption)
-    }
-  }, [contracts, selectedQuote, setSelectedQuote, quoteTokenDefault])
-
   const filteredTokens = useMemo(
     () =>
       contracts.filter(
         (token) =>
-          token.base_currency !== (selectedQuote?.base || quoteTokenDefault) &&
-          token.product_type === 'PERP',
+          token.product_type === 'PERP' &&
+          ALLOWED_SYMBOLS.includes(token.base_currency),
       ),
-    [contracts, selectedQuote, quoteTokenDefault],
+    [contracts],
   )
 
   const options: TradeOption[] = useMemo(
@@ -67,7 +56,6 @@ const SymbolSelection: React.FC = () => {
 
   useEffect(() => {
     if (options.length > 0 && !selectedSymbol) {
-      const tokenDefault = 'SOL'
       let initialSymbol = options.find((opt) => opt.base === tokenDefault)
 
       if (!initialSymbol) {
@@ -84,7 +72,7 @@ const SymbolSelection: React.FC = () => {
 
   return (
     <div className="w-full z-10">
-      <SelectWithValidation
+      <Select
         id="symbols"
         value={selectedSymbol}
         isMulti={false}
