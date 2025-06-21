@@ -67,7 +67,7 @@ export const monitor = createStore<MonitorState>(
             : [existingItem.data]
 
           // Add new trade to the beginning of the array
-          const updatedTrades = [trade, ...currentTrades].slice(0, 10)
+          const updatedTrades = [trade, ...currentTrades].slice(0, 30)
 
           existingItem.data = updatedTrades
           existingItem.lastUpdate = Date.now()

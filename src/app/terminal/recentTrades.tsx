@@ -12,7 +12,7 @@ export default function RecentTrades() {
   )
 
   // Number of trades to display
-  const maxTrades = 20
+  const maxTrades = 30
 
   useEffect(() => {
     if (monitors?.data) {
@@ -26,13 +26,13 @@ export default function RecentTrades() {
           .filter((trade) => trade && typeof trade === 'object' && trade.ts)
 
         if (validTrades.length > 0) {
-          setTrades((prevTrades) => {
-            const newTrades = [...validTrades, ...prevTrades]
-            // Sort trades by timestamp in descending order
-            newTrades.sort((a, b) => b.ts - a.ts)
-            // Keep only the last maxTrades trades
-            return newTrades.slice(0, maxTrades)
-          })
+          // Sort trades by timestamp in descending order and keep only the last maxTrades
+          const sortedTrades = validTrades
+            .sort((a, b) => b.ts - a.ts)
+            .slice(0, maxTrades)
+
+          // Replace the entire local state with the monitor data
+          setTrades(sortedTrades)
         }
       }
     }
