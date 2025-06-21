@@ -40,3 +40,28 @@ export interface TradeData {
   referrerReward: number
   bitFlags: number
 }
+
+/**
+ * Interface for Drift contract data structure
+ */
+export interface DriftContract {
+  contract_index: number
+  ticker_id: string
+  base_currency: string
+  quote_currency: string
+  last_price: string
+  base_volume: string
+  quote_volume: string
+  high: string
+  low: string
+  product_type: string
+  open_interest: string
+  index_price: string
+  index_name: string
+  index_currency: string
+  start_timestamp: string
+  end_timestamp: string
+  funding_rate: string
+  next_funding_rate: string
+  next_funding_rate_timestamp: string
+}
