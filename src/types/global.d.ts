@@ -2,6 +2,7 @@
 
 interface TradingViewWidgetConfig {
   autosize?: boolean
+  debug?: boolean
   symbol?: string
   interval?: string
   timezone?: string
