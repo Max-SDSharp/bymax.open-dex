@@ -1,10 +1,8 @@
 import { useState, useCallback } from 'react'
 
-import {
-  driftContractsService,
-  DriftContract,
-} from '../services/driftContracts/driftContractsService'
-import { monitor } from '../store/monitor'
+import { driftContractsService } from '@/services/driftContracts/driftContractsService'
+import { monitor } from '@/store/monitor'
+import { DriftContract } from '@/types'
 
 /**
  * Hook for managing Drift contracts data

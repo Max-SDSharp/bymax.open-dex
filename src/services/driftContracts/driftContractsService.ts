@@ -3,8 +3,7 @@
  * for fetching contract data and market information.
  */
 
-import { monitor } from '../../store/monitor'
-
+import { monitor } from '@/store/monitor'
 import { DriftContract } from '@/types'
 
 /**
