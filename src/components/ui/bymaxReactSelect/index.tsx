@@ -68,8 +68,8 @@ export default function SelectWithValidation({
       />
       <p
         className={cn(
-          'text-red-500 text-[10px] text-left',
-          isInvalid ? 'visible' : 'hidden',
+          'text-red-500 text-[10px] text-left transition-opacity duration-200',
+          isInvalid ? 'opacity-100' : 'opacity-0',
         )}
       >
         {errorMessage}
