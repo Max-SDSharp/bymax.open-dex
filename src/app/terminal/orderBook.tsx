@@ -30,7 +30,6 @@ export default function OrderBook() {
     ...asks.map((ask) => parseFloat(ask.size.toString()) / 1000000000),
     0,
   )
-  const maxSize = Math.max(maxBidSize, maxAskSize)
 
   return (
     <div className="bg-secondary/20 rounded-lg overflow-hidden h-[410px]">
@@ -45,7 +44,7 @@ export default function OrderBook() {
           <div className="mb-1">
             {asks.reverse().map((ask, index) => {
               const size = parseFloat(ask.size.toString()) / 1000000000
-              const intensity = maxSize > 0 ? (size / maxSize) * 0.3 : 0
+              const intensity = maxAskSize > 0 ? (size / maxAskSize) * 0.3 : 0
 
               return (
                 <div
@@ -75,7 +74,7 @@ export default function OrderBook() {
           <div className="mt-1">
             {bids.map((bid, index) => {
               const size = parseFloat(bid.size.toString()) / 1000000000
-              const intensity = maxSize > 0 ? (size / maxSize) * 0.3 : 0
+              const intensity = maxBidSize > 0 ? (size / maxBidSize) * 0.3 : 0
 
               return (
                 <div
