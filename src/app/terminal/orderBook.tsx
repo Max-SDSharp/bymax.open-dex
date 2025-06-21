@@ -21,6 +21,17 @@ export default function OrderBook() {
     ? [...monitors.data.asks]
     : []
 
+  // Calculate max sizes for normalization
+  const maxBidSize = Math.max(
+    ...bids.map((bid) => parseFloat(bid.size.toString()) / 1000000000),
+    0,
+  )
+  const maxAskSize = Math.max(
+    ...asks.map((ask) => parseFloat(ask.size.toString()) / 1000000000),
+    0,
+  )
+  const maxSize = Math.max(maxBidSize, maxAskSize)
+
   return (
     <div className="bg-secondary/20 rounded-lg overflow-hidden h-[410px]">
       <div className="p-2 h-full">
@@ -32,22 +43,25 @@ export default function OrderBook() {
         <div className="space-y-1 overflow-y-auto h-[calc(100%-5px)]">
           {/* Asks (sell orders) - displayed in reverse order */}
           <div className="mb-1">
-            {asks.reverse().map((ask, index) => (
-              <div
-                key={`ask-${index}`}
-                className="grid grid-cols-2 text-xs py-0.5 px-2 hover:bg-red-900/20"
-                style={{
-                  background: `linear-gradient(to left, rgba(239, 68, 68, ${(index + 1) * 0.05}) 0%, rgba(239, 68, 68, 0) 100%)`,
-                }}
-              >
-                <div className="text-error font-mono">
-                  {parseFloat(ask.price.toString()) / 1000000}
+            {asks.reverse().map((ask, index) => {
+              const size = parseFloat(ask.size.toString()) / 1000000000
+              const intensity = maxSize > 0 ? (size / maxSize) * 0.3 : 0
+
+              return (
+                <div
+                  key={`ask-${index}`}
+                  className="grid grid-cols-2 text-xs py-0.5 px-2 hover:bg-red-900/20"
+                  style={{
+                    background: `linear-gradient(to left, rgba(239, 68, 68, ${intensity}) 0%, rgba(239, 68, 68, 0) 100%)`,
+                  }}
+                >
+                  <div className="text-error font-mono">
+                    {parseFloat(ask.price.toString()) / 1000000}
+                  </div>
+                  <div className="text-right font-mono">{size}</div>
                 </div>
-                <div className="text-right font-mono">
-                  {parseFloat(ask.size.toString()) / 1000000000}
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
 
           {/* Current price */}
@@ -59,22 +73,25 @@ export default function OrderBook() {
 
           {/* Bids (buy orders) */}
           <div className="mt-1">
-            {bids.map((bid, index) => (
-              <div
-                key={`bid-${index}`}
-                className="grid grid-cols-2 text-xs py-0.5 px-2 hover:bg-green-900/20"
-                style={{
-                  background: `linear-gradient(to left, rgba(16, 185, 129, ${(bids.length - index) * 0.05}) 0%, rgba(16, 185, 129, 0) 100%)`,
-                }}
-              >
-                <div className="text-success font-mono">
-                  {parseFloat(bid.price.toString()) / 1000000}
+            {bids.map((bid, index) => {
+              const size = parseFloat(bid.size.toString()) / 1000000000
+              const intensity = maxSize > 0 ? (size / maxSize) * 0.3 : 0
+
+              return (
+                <div
+                  key={`bid-${index}`}
+                  className="grid grid-cols-2 text-xs py-0.5 px-2 hover:bg-green-900/20"
+                  style={{
+                    background: `linear-gradient(to left, rgba(16, 185, 129, ${intensity}) 0%, rgba(16, 185, 129, 0) 100%)`,
+                  }}
+                >
+                  <div className="text-success font-mono">
+                    {parseFloat(bid.price.toString()) / 1000000}
+                  </div>
+                  <div className="text-right font-mono">{size}</div>
                 </div>
-                <div className="text-right font-mono">
-                  {parseFloat(bid.size.toString()) / 1000000000}
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>
