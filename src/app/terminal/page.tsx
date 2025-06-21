@@ -24,7 +24,7 @@ export default function Terminal() {
 
         <div className="flex flex-col md:flex-row md:w-[45%] gap-4">
           <div className="w-full md:w-1/2 bg-background-tertiary p-4 rounded-lg border border-border h-[500px]">
-            <div className="flex items-center mb-2 w-full">
+            <div className="flex items-center mb-1 w-full">
               <button
                 className={`flex-1 px-4 py-2 text-sm font-medium text-center ${
                   activeTab === 'orderbook'

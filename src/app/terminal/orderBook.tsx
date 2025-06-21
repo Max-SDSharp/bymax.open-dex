@@ -22,14 +22,14 @@ export default function OrderBook() {
     : []
 
   return (
-    <div className="bg-secondary/20 rounded-lg overflow-hidden h-[400px]">
+    <div className="bg-secondary/20 rounded-lg overflow-hidden h-[410px]">
       <div className="p-2 h-full">
         <div className="grid grid-cols-2 text-xs text-foreground/70 mb-1 px-2">
           <div className="text-left">PRICE[$]</div>
           <div className="text-right">SIZE[SOL]</div>
         </div>
 
-        <div className="space-y-1 overflow-y-auto h-[calc(100%-24px)]">
+        <div className="space-y-1 overflow-y-auto h-[calc(100%-5px)]">
           {/* Asks (sell orders) - displayed in reverse order */}
           <div className="mb-1">
             {asks.reverse().map((ask, index) => (
