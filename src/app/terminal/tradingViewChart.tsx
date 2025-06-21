@@ -3,18 +3,20 @@
 import { useRef, useEffect, useState } from 'react'
 
 import { theme } from '@/store/theme'
+import { useTradeStore } from '@/store/trade'
 
 export default function TradingViewChart() {
   const tvChartContainerRef = useRef<HTMLDivElement>(null)
   const [isClient, setIsClient] = useState(false)
   const { theme: currentTheme } = theme()
+  const { selectedSymbol } = useTradeStore()
 
   useEffect(() => {
     setIsClient(true)
   }, [])
 
   useEffect(() => {
-    if (!isClient || !tvChartContainerRef.current) return
+    if (!isClient || !tvChartContainerRef.current || !selectedSymbol) return
 
     try {
       // Clear the container before adding the widget
@@ -29,9 +31,9 @@ export default function TradingViewChart() {
           typeof window.TradingView !== 'undefined' &&
           tvChartContainerRef.current
         ) {
-          // Map the selected pair to Binance format
-          // Binance format is typically BTCUSDT, ETHUSDT, etc.
-          const symbol = `BINANCE:SOLUSDT`
+          // Map the selected symbol to Binance format
+          // Use the base currency from selectedSymbol and append quote currency
+          const symbol = `BINANCE:${selectedSymbol.base}${selectedSymbol.quote}`
 
           // Map the timeframe to TradingView format
           const interval = 'D'
@@ -77,12 +79,22 @@ export default function TradingViewChart() {
         `
       }
     }
-  }, [isClient, currentTheme])
+  }, [isClient, currentTheme, selectedSymbol])
 
   if (!isClient) {
     return (
       <div className="relative w-full h-[500px] bg-secondary/20 flex items-center justify-center">
         <div className="text-foreground/50">Loading TradingView chart...</div>
+      </div>
+    )
+  }
+
+  if (!selectedSymbol) {
+    return (
+      <div className="relative w-full h-[500px] bg-secondary/20 flex items-center justify-center">
+        <div className="text-foreground/50">
+          Please select a symbol to view the chart
+        </div>
       </div>
     )
   }
