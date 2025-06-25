@@ -67,7 +67,7 @@ export const websocket = create<WebSocketState>()(
             orderBookData.asks = orderBookData.asks.slice(0, 9)
           }
           monitor.getState().addMonitor({
-            id: `${channel}_${orderBookData.marketName}`,
+            id: `${channel}`,
             data: orderBookData,
             lastUpdate: Date.now(),
           })
@@ -91,16 +91,23 @@ export const websocket = create<WebSocketState>()(
         connect: () => {
           if (!get().connected) {
             WebsocketService.connect()
+              .then(() => {
+                unsubscribe = WebsocketService.onMessage(
+                  (message: WebSocketMessage) => {
+                    handleWebSocketMessage(message)
+                  },
+                )
 
-            unsubscribe = WebsocketService.onMessage(
-              (message: WebSocketMessage) => {
-                handleWebSocketMessage(message)
-              },
-            )
-
-            set((state: Draft<WebSocketState>) => {
-              state.connected = true
-            })
+                set((state: Draft<WebSocketState>) => {
+                  state.connected = true
+                })
+              })
+              .catch((error) => {
+                console.error('Failed to connect to WebSocket:', error)
+                set((state: Draft<WebSocketState>) => {
+                  state.connected = false
+                })
+              })
           }
         },
 
@@ -109,10 +116,13 @@ export const websocket = create<WebSocketState>()(
          * Cleans up event handlers and updates connection status
          */
         disconnect: () => {
-          if (unsubscribe) {
+          if (get().connected) {
             WebsocketService.disconnect()
-            unsubscribe()
-            unsubscribe = null
+
+            if (unsubscribe) {
+              unsubscribe()
+              unsubscribe = null
+            }
 
             set((state: Draft<WebSocketState>) => {
               state.connected = false

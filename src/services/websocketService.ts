@@ -6,6 +6,7 @@ class WebSocketService {
   private socket: WebSocket | null = null
   private url: string
   private isConnected = false
+  private isConnecting = false
   private reconnectTimer: NodeJS.Timeout | null = null
   private reconnectAttempts = 0
   private maxReconnectAttempts = 20
@@ -24,17 +25,38 @@ class WebSocketService {
    * @returns Promise that resolves when connection is established
    */
   connect(): Promise<void> {
+    // If already connected, return immediately
     if (this.isConnected) {
       return Promise.resolve()
     }
 
+    // If already connecting, wait for the existing connection attempt
+    if (this.isConnecting) {
+      return new Promise((resolve) => {
+        const checkConnection = () => {
+          if (this.isConnected) {
+            resolve()
+          } else if (!this.isConnecting) {
+            // If connection attempt failed, try again
+            this.connect().then(resolve)
+          } else {
+            setTimeout(checkConnection, 100)
+          }
+        }
+        checkConnection()
+      })
+    }
+
     this.intentionalDisconnect = false
+    this.isConnecting = true
+
     return new Promise((resolve, reject) => {
       try {
         this.socket = new WebSocket(this.url)
 
         this.socket.onopen = () => {
           this.isConnected = true
+          this.isConnecting = false
           this.reconnectAttempts = 0
           console.log('WebSocket connected')
           this.startHeartbeat()
@@ -43,6 +65,7 @@ class WebSocketService {
 
         this.socket.onclose = () => {
           this.isConnected = false
+          this.isConnecting = false
           console.log('WebSocket disconnected')
           this.stopHeartbeat()
           if (!this.intentionalDisconnect) {
@@ -51,6 +74,7 @@ class WebSocketService {
         }
 
         this.socket.onerror = (error) => {
+          this.isConnecting = false
           console.error('WebSocket error:', error)
           reject(error)
         }
@@ -72,6 +96,7 @@ class WebSocketService {
           }
         }
       } catch (error) {
+        this.isConnecting = false
         reject(error)
       }
     })
@@ -141,11 +166,20 @@ class WebSocketService {
    */
   disconnect() {
     this.intentionalDisconnect = true
+    this.isConnecting = false
+
     if (this.socket) {
-      this.socket.close()
+      // Only close if the socket is not already closed
+      if (
+        this.socket.readyState === WebSocket.OPEN ||
+        this.socket.readyState === WebSocket.CONNECTING
+      ) {
+        this.socket.close()
+      }
       this.socket = null
-      this.isConnected = false
     }
+
+    this.isConnected = false
 
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer)

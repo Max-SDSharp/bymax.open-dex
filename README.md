@@ -16,6 +16,32 @@ Bymax OpenDEX is a modern, high-performance decentralized exchange interface ins
 - **Cross-Collateral**: Use any supported token as collateral for trading
 - **Responsive Design**: Optimized for all devices with a modern UI
 
+## Real-Time Trading Infrastructure
+
+### WebSocket Architecture
+
+Bymax OpenDEX implements a sophisticated real-time data infrastructure with enterprise-grade WebSocket connectivity:
+
+- **Persistent Connection Management**: Automatic reconnection with exponential backoff strategy (max 20 attempts, 3-second intervals)
+- **Heartbeat Mechanism**: 30-second ping/pong protocol to maintain connection health and detect disconnections early
+- **Channel-Based Subscriptions**: Efficient message routing for orderbook and trade data streams
+- **Memory Leak Prevention**: Automatic cleanup of event handlers and intervals on component unmount
+- **Connection State Synchronization**: Real-time connection status across all application components
+
+### Real-Time Data Streams
+
+- **Orderbook Feed**: Live orderbook updates with bid/ask depth visualization (top 9 levels)
+- **Trade History**: Real-time trade execution feed with comprehensive trade metadata
+- **Market Data**: Live price feeds, volume, and market statistics
+- **Connection Resilience**: Graceful handling of network interruptions with automatic recovery
+
+### State Management Architecture
+
+- **Zustand with Immer**: Immutable state updates with persistent storage capabilities
+- **Centralized Data Store**: Single source of truth for all real-time market data
+- **Efficient Data Caching**: Intelligent data preservation with automatic cleanup
+- **Type-Safe Operations**: Full TypeScript integration for data structures and API contracts
+
 ## Products
 
 Drift Protocol offers four primary products:
@@ -27,10 +53,12 @@ Drift Protocol offers four primary products:
 
 ## Technical Stack
 
-- **Frontend**: Next.js, TypeScript, Tailwind CSS
-- **State Management**: Zustand
-- **Styling**: Tailwind CSS with custom components
-- **Development**: ESLint, Prettier
+- **Frontend**: Next.js 15 with App Router, TypeScript, Tailwind CSS
+- **State Management**: Zustand with Immer middleware and persistent storage
+- **Real-Time Communication**: WebSocket with automatic reconnection and heartbeat
+- **Styling**: Tailwind CSS with custom design system
+- **Development**: ESLint, Prettier, TypeScript strict mode
+- **Performance**: React 19 with concurrent features and optimized re-renders
 
 ## Getting Started
 
@@ -42,12 +70,14 @@ Drift Protocol offers four primary products:
 ### Installation
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/yourusername/open-dex.git
 cd open-dex
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 # or
@@ -55,6 +85,7 @@ yarn install
 ```
 
 3. Run the development server
+
 ```bash
 npm run dev
 # or
@@ -70,8 +101,10 @@ This project uses Next.js App Router for routing and Tailwind CSS for styling. T
 - `src/`: Contains the source code
   - `app/`: App Router components and routes
   - `components/`: Reusable UI components
-  - `hooks/`: Custom React hooks
-  - `lib/`: Utility functions and APIs
+  - `hooks/`: Custom React hooks including WebSocket integration
+  - `services/`: WebSocket service and API integrations
+  - `store/`: Zustand stores with middleware and persistence
+  - `types/`: TypeScript type definitions
   - `styles/`: Global styles and Tailwind configuration
 
 ## Contributing
