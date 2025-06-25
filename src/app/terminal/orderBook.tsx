@@ -1,6 +1,7 @@
 'use client'
 
 import { monitor } from '@/store/monitor'
+import { useTradeStore } from '@/store/trade'
 
 type OrderBookEntry = {
   price: number
@@ -9,8 +10,12 @@ type OrderBookEntry = {
 }
 
 export default function OrderBook() {
+  const { selectedSymbol } = useTradeStore()
+
   const monitors = monitor((state) =>
-    state.items.find((m) => m.id === 'orderbook_perp_0_SOL-PERP'),
+    state.items.find(
+      (m) => m.id === `orderbook_perp_${selectedSymbol?.id || 0}`,
+    ),
   )
 
   // Create copies of the arrays to avoid modifying read-only objects

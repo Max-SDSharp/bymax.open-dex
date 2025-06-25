@@ -3,39 +3,47 @@
 import { useEffect, useState } from 'react'
 
 import { monitor } from '@/store/monitor'
+import { useTradeStore } from '@/store/trade'
 import { TradeData } from '@/types'
 
 export default function RecentTrades() {
   const [trades, setTrades] = useState<TradeData[]>([])
+
+  const { selectedSymbol } = useTradeStore()
   const monitors = monitor((state) =>
-    state.items.find((m) => m.id?.includes('trades_perp')),
+    state.items.find((m) => m.id === `trades_perp_${selectedSymbol?.id || 0}`),
   )
 
   // Number of trades to display
   const maxTrades = 30
 
   useEffect(() => {
-    if (monitors?.data) {
-      const tradeData = monitors.data
-
-      // Check if tradeData is an array
-      if (Array.isArray(tradeData)) {
-        // Process each trade in the array
-        const validTrades = tradeData
-          .map((item) => item.data)
-          .filter((trade) => trade && typeof trade === 'object' && trade.ts)
-
-        if (validTrades.length > 0) {
-          // Sort trades by timestamp in descending order and keep only the last maxTrades
-          const sortedTrades = validTrades
-            .sort((a, b) => b.ts - a.ts)
-            .slice(0, maxTrades)
-
-          // Replace the entire local state with the monitor data
-          setTrades(sortedTrades)
-        }
-      }
+    // return if no valid trades found
+    if (!monitors?.data || !Array.isArray(monitors?.data)) {
+      setTrades([])
+      return
     }
+
+    const tradeData = monitors.data
+
+    // Process each trade in the array
+    const validTrades = tradeData
+      .map((item) => item.data)
+      .filter((trade) => trade && typeof trade === 'object' && trade.ts)
+
+    // return if no valid trades found
+    if (validTrades.length === 0) {
+      setTrades([])
+      return
+    }
+
+    // Sort trades by timestamp in descending order and keep only the last maxTrades
+    const sortedTrades = validTrades
+      .sort((a, b) => b.ts - a.ts)
+      .slice(0, maxTrades)
+
+    // Update trades state with processed data
+    setTrades(sortedTrades)
   }, [monitors?.data])
 
   if (!trades || trades.length === 0) {
