@@ -35,7 +35,7 @@ interface TradeState {
 }
 
 const initialSymbol: TradeOption = {
-  id: 'SOL',
+  id: '0',
   value: 'SOL',
   label: 'SOL/USDC',
   base: 'SOL',

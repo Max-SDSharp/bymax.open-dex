@@ -45,7 +45,7 @@ const SymbolSelection: React.FC = () => {
   const options: TradeOption[] = useMemo(
     () =>
       filteredTokens.map((token) => ({
-        id: token.ticker_id,
+        id: token.contract_index.toString(),
         value: token.ticker_id,
         label: token.base_currency,
         base: token.base_currency,
